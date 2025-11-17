@@ -1,2 +1,4 @@
-# rosicom
-Generates real, ideal, and worst fantasy football lineups, compares matchday scenarios, and provides season-wide statistical analysis.
+# Rosicom
+
+This project analyzes a fantasy football league by generating real, ideal, and worst possible lineups for each team across all matchdays. It allows users to understand how different lineup decisions could have changed match results and overall standings.
+
