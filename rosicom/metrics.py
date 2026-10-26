@@ -13,7 +13,10 @@ def gol(punti: float) -> int:
 
 
 def esito(fatti: float, subiti: float) -> int:
-    gf, gs = gol(fatti), gol(subiti)
+    return esito_gol(gol(fatti), gol(subiti))
+
+
+def esito_gol(gf: int, gs: int) -> int:
     if gf > gs:
         return cfg.PUNTI_VITTORIA
     if gf == gs:
@@ -21,11 +24,12 @@ def esito(fatti: float, subiti: float) -> int:
     return cfg.PUNTI_SCONFITTA
 
 
-def classifica(righe: pd.DataFrame) -> pd.DataFrame:
+def classifica(righe: pd.DataFrame, penalita: dict[str, float] | None = None) -> pd.DataFrame:
     r = righe.copy()
-    r["pt"] = [esito(f, s) for f, s in zip(r["fatti"], r["subiti"])]
-    r["gf"] = r["fatti"].map(gol)
-    r["gs"] = r["subiti"].map(gol)
+    if "gf" not in r:  # senza gol ufficiali li calcolo dalle fasce di config.py
+        r["gf"] = r["fatti"].map(gol)
+        r["gs"] = r["subiti"].map(gol)
+    r["pt"] = [esito_gol(f, s) for f, s in zip(r["gf"], r["gs"])]
     tab = r.groupby("squadra").agg(
         g=("pt", "size"),
         v=("pt", lambda x: (x == cfg.PUNTI_VITTORIA).sum()),
@@ -36,6 +40,8 @@ def classifica(righe: pd.DataFrame) -> pd.DataFrame:
         fp_fatti=("fatti", "sum"), fp_subiti=("subiti", "sum"),
     )
     tab["media_fp"] = (tab["fp_fatti"] / tab["g"]).round(2)
+    tab["penalita"] = tab.index.map(penalita or {}).fillna(0)
+    tab["pt"] = tab["pt"] + tab["penalita"]
     return tab.sort_values(["pt", "fp_fatti"], ascending=False)
 
 

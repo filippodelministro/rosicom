@@ -6,3 +6,4 @@ output/*
 data/*
 !data/sample/
 .DS_Store
+.env

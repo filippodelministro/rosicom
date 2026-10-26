@@ -51,3 +51,9 @@ def test_reparti():
     tab = metrics.reparti(f)
     assert tab.loc["A", "A"] == 8
     assert list(tab.columns) == ["P", "D", "C", "A"]
+
+
+def test_gol_ufficiali_e_penalita():
+    r = righe((1, "A", "B", 87.5, 64)).assign(gf=[5, 0], gs=[0, 5])
+    tab = metrics.classifica(r, {"A": -3})
+    assert tab.loc["A", "gf"] == 5 and tab.loc["A", "pt"] == 0

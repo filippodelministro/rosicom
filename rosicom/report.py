@@ -5,7 +5,6 @@ from pathlib import Path
 import pandas as pd
 
 from .config import RUOLI
-from .metrics import gol
 
 NOMI_RUOLI = {"P": "Portieri", "D": "Difensori", "C": "Centrocampisti", "A": "Attaccanti"}
 
@@ -50,7 +49,8 @@ def _classifica(tab: pd.DataFrame) -> str:
                ("gf", "GF"), ("gs", "GS"), ("fp_fatti", "Fantapunti")]
     testa = "<th>#</th><th class='l'>Squadra</th>" + "".join(f"<th>{t}</th>" for _, t in colonne)
     righe = "".join(
-        f"<tr><td>{i}</td><td class='l'><b>{escape(sq)}</b></td>"
+        f"<tr><td>{i}</td><td class='l'><b>{escape(sq)}</b>"
+        + (f" <span class='da'>({r['penalita']:g})</span>" if r["penalita"] else "") + "</td>"
         + "".join(f"<td>{r[c]:g}</td>" for c, _ in colonne) + "</tr>"
         for i, (sq, r) in enumerate(tab.iterrows(), start=1)
     )
@@ -65,7 +65,7 @@ def _calendario(partite: pd.DataFrame) -> str:
         righe = []
         for _, p in partite_g.iterrows():
             if pd.notna(p["punti_casa"]):
-                ris = f"{gol(p['punti_casa'])} – {gol(p['punti_trasferta'])}"
+                ris = f"{p['gol_casa']:g} – {p['gol_trasferta']:g}"
                 fp = f"{p['punti_casa']:g} – {p['punti_trasferta']:g}"
             else:
                 ris, fp = "<span class='da'>–</span>", ""
