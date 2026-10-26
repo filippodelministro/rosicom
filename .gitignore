@@ -1,8 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
-output/*
-!output/.gitkeep
 data/*
 !data/sample/
 .DS_Store

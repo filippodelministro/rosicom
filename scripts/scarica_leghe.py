@@ -146,7 +146,7 @@ def main() -> None:
     leghe.scrivi_csv(partite, cartella / "partite.csv")
     print(f"Scaricate {len({g['squadra'] for g in rose})} squadre e {len(partite)} partite\n")
 
-    subprocess.run([sys.executable, "-m", "rosicom", str(cartella)], cwd=RADICE)
+    subprocess.run([sys.executable, "-m", "rosicom", "--dati", str(cartella)], cwd=RADICE)
 
 
 if __name__ == "__main__":

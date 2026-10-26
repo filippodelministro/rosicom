@@ -1,9 +1,12 @@
-"""Uso: python -m rosicom [cartella_dati] [--out cartella_output] [--no-browser]"""
+"""Uso: python -m rosicom [classifica | calendario [N] | squadre [nome]] [--dati cartella]
+
+Senza comando apre un menu interattivo.
+"""
 import argparse
-import webbrowser
 from pathlib import Path
 
-from . import loader, metrics, report
+from . import loader, metrics, terminale
+from .terminale import console
 
 
 def cartella_predefinita() -> Path:
@@ -18,23 +21,54 @@ def cartella_predefinita() -> Path:
     return Path("data/sample")
 
 
+def menu(classifica, partite, rose) -> None:
+    while True:
+        console.print("\n[bold]1[/bold] Classifica   [bold]2[/bold] Giornata   [bold]3[/bold] Calendario"
+                      "   [bold]4[/bold] Squadre   [bold]c[/bold] Pulisci   [bold]q[/bold] Esci")
+        scelta = console.input("> ").strip().lower()
+        if scelta == "1":
+            terminale.classifica(classifica)
+        elif scelta == "2":
+            prossima = terminale.prossima_giornata(partite)
+            n = console.input(f"Quale giornata? [dim](Invio = {prossima})[/dim] ").strip()
+            terminale.giornata(partite, int(n) if n.isdigit() else prossima)
+        elif scelta == "3":
+            terminale.calendario(partite)
+        elif scelta == "4":
+            nome = console.input("Nome squadra [dim](Invio = tutte)[/dim] ").strip()
+            terminale.squadre(rose, nome or None)
+        elif scelta in ("c", "clear"):
+            console.clear()
+        elif scelta in ("q", "esci", ""):
+            return
+
+
 def main() -> None:
-    ap = argparse.ArgumentParser(prog="rosicom")
-    ap.add_argument("dati", nargs="?", default=cartella_predefinita(), type=Path)
-    ap.add_argument("--out", default="output", type=Path)
-    ap.add_argument("--no-browser", action="store_true", help="non aprire la pagina nel browser")
+    ap = argparse.ArgumentParser(prog="rosicom", description="Classifica, calendario e squadre della lega.")
+    ap.add_argument("comando", nargs="?", choices=["classifica", "calendario", "squadre"])
+    ap.add_argument("valore", nargs="?", help="numero di giornata (calendario) o nome squadra (squadre)")
+    ap.add_argument("--dati", default=cartella_predefinita(), type=Path, help="cartella con i CSV della lega")
     args = ap.parse_args()
 
     partite = loader.carica_partite(args.dati)
     classifica = metrics.classifica(loader.partite_per_squadra(loader.giocate(partite)),
                                     loader.carica_penalita(args.dati))
     rose = loader.carica_squadre(args.dati)
+    console.print(f"[dim]Lega: {args.dati}[/dim]")
 
-    print(classifica[["pt", "g", "v", "n", "p", "gf", "gs"]].to_string())
-    pagina = report.salva_html(rose, classifica, partite, args.out, str(args.dati))
-    print(f"\nPagina salvata in {pagina}")
-    if not args.no_browser:
-        webbrowser.open(pagina.resolve().as_uri())
+    if args.comando == "classifica":
+        terminale.classifica(classifica)
+    elif args.comando == "calendario":
+        if args.valore and args.valore.isdigit():
+            terminale.giornata(partite, int(args.valore))
+        else:
+            terminale.calendario(partite)
+    elif args.comando == "squadre":
+        terminale.squadre(rose, args.valore)
+    else:
+        terminale.classifica(classifica)
+        terminale.giornata(partite, terminale.prossima_giornata(partite))
+        menu(classifica, partite, rose)
 
 
 if __name__ == "__main__":
