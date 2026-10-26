@@ -29,66 +29,34 @@ python -m rosicom                     # apre la pagina nel browser
 
 ## Usalo con la tua lega
 
-### 1. Trova i dati della tua lega
-
-Accedi a Leghe Fantacalcio dal browser e apri la **classifica** della competizione che vuoi seguire
-(il campionato, non la coppa). L'indirizzo è di questo tipo:
-
-```
-https://leghe.fantacalcio.it/nomedellatualega/classifica?id=123456
-```
-
-- **alias** della lega: la parte dopo `leghe.fantacalcio.it/` → `nomedellatualega`
-- **id della competizione**: il numero dopo `?id=` → `123456`
-  (se non c'è, scegli la competizione dal menu in alto e l'indirizzo si aggiorna)
-- **nome della competizione**: come appare sul sito, es. `NomeDellaTuaLega`
-
-### 2. Crea il file `.env`
-
-```bash
-cp .env.example .env
-```
-
-Apri `.env` e compilalo:
-
-```
-LEGHE_USERNAME=il_tuo_username
-LEGHE_PASSWORD=la_tua_password
-LEGHE_APP_KEY=...                # lascialo com'è
-LEGHE_ALIAS=nomedellatualega
-LEGHE_ID_COMPETIZIONE=123456
-LEGHE_NOME_COMPETIZIONE=NomeDellaTuaLega
-```
-
-`.env` contiene la tua password: resta solo sul tuo computer ed è escluso da git (`.gitignore`).
-Non condividerlo e non committarlo.
-
-### 3. Scarica i dati
-
 ```bash
 python scripts/scarica_leghe.py
 ```
 
-Lo script fa il login, scarica gli export Excel ufficiali di rose e calendario
-(gli stessi dei pulsanti "XLSX" e "Scarica ora" sul sito) e li converte in:
+La prima volta lo script chiede:
+
+1. **il nome della lega**, cioè quello nell'indirizzo `leghe.fantacalcio.it/nomedellatualega`
+   (puoi anche incollare direttamente il link)
+2. **username e password** di Leghe Fantacalcio (la password non viene mostrata mentre la scrivi)
+3. se **salvare la password**, per non doverla riscrivere ogni volta
+
+Poi fa tutto da solo: login, trova il campionato della lega (se ci sono più competizioni ti chiede quale),
+scarica rose e calendario e apre la pagina nel browser.
+
+Le impostazioni finiscono in `.env`, che resta solo sul tuo computer ed è escluso da git.
+Per ricominciare da capo (altra lega, altro account) cancella `.env`.
+
+**Ogni giornata** rilancia lo stesso comando: riscarica i dati aggiornati e riapre la pagina.
+Per riaprire la pagina senza riscaricare: `python -m rosicom`.
+
+I dati scaricati finiscono in:
 
 ```
 data/nomedellatualega/
-├── raw/rose.xlsx, raw/calendario.xlsx   # file originali
+├── raw/rose.xlsx, raw/calendario.xlsx   # export ufficiali di Leghe
 ├── squadre.csv                          # squadra, giocatore, ruolo, club, costo
 └── partite.csv                          # giornata, casa, trasferta, punti, gol
 ```
-
-### 4. Apri la pagina
-
-```bash
-python -m rosicom
-```
-
-Si apre il browser con squadre, classifica e calendario. Se `data/<alias>/` esiste
-viene usata la tua lega, altrimenti i dati di esempio. La pagina resta salvata in `output/report.html`.
-
-Ogni giornata: rilancia i passi 3 e 4.
 
 ### Penalità
 

@@ -76,3 +76,26 @@ def scrivi_csv(righe: list[dict], path: Path) -> None:
         w = csv.DictWriter(f, fieldnames=list(righe[0]))
         w.writeheader()
         w.writerows(righe)
+
+
+RE_COMPETIZIONE = re.compile(
+    r"data-id='(\d+)'><span class='competition-icon competition-icon-(\d+)'></span>([^<]+)</a>")
+TIPO_CAMPIONATO = "1"
+
+
+def alias_da_testo(testo: str) -> str:
+    """Accetta 'nomelega' oppure un link 'https://leghe.fantacalcio.it/nomelega/...'."""
+    testo = testo.strip().strip("/")
+    if "leghe.fantacalcio.it/" in testo:
+        testo = testo.split("leghe.fantacalcio.it/", 1)[1]
+    return testo.split("/")[0].split("?")[0].lower()
+
+
+def competizioni(html: str) -> list[dict]:
+    """Competizioni della lega lette dal menu della pagina (senza doppioni)."""
+    viste, elenco = set(), []
+    for id_, tipo, nome in RE_COMPETIZIONE.findall(html):
+        if id_ not in viste:
+            viste.add(id_)
+            elenco.append({"id": id_, "tipo": tipo, "nome": nome.strip()})
+    return elenco
