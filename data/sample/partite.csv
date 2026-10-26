@@ -1,0 +1,31 @@
+giornata,casa,trasferta,punti_casa,punti_trasferta
+1,Inter Nos,Rosiconi,66.5,65.5
+1,Atletico Ma Non Troppo,Dinamo Divano,70.0,69.0
+1,Sporting Panchina,Real Sfiga,82.5,64.0
+2,Inter Nos,Dinamo Divano,80.0,64.0
+2,Rosiconi,Real Sfiga,64.0,72.5
+2,Atletico Ma Non Troppo,Sporting Panchina,76.5,78.0
+3,Inter Nos,Real Sfiga,75.5,70.0
+3,Dinamo Divano,Sporting Panchina,73.5,76.5
+3,Rosiconi,Atletico Ma Non Troppo,67.0,70.5
+4,Inter Nos,Sporting Panchina,76.5,73.5
+4,Real Sfiga,Atletico Ma Non Troppo,75.0,72.0
+4,Dinamo Divano,Rosiconi,82.5,67.5
+5,Inter Nos,Atletico Ma Non Troppo,71.5,67.0
+5,Sporting Panchina,Rosiconi,75.5,70.5
+5,Real Sfiga,Dinamo Divano,69.5,72.5
+6,Rosiconi,Inter Nos,77.0,58.5
+6,Dinamo Divano,Atletico Ma Non Troppo,67.0,70.0
+6,Real Sfiga,Sporting Panchina,73.5,75.0
+7,Dinamo Divano,Inter Nos,,
+7,Real Sfiga,Rosiconi,,
+7,Sporting Panchina,Atletico Ma Non Troppo,,
+8,Real Sfiga,Inter Nos,,
+8,Sporting Panchina,Dinamo Divano,,
+8,Atletico Ma Non Troppo,Rosiconi,,
+9,Sporting Panchina,Inter Nos,,
+9,Atletico Ma Non Troppo,Real Sfiga,,
+9,Rosiconi,Dinamo Divano,,
+10,Atletico Ma Non Troppo,Inter Nos,,
+10,Rosiconi,Sporting Panchina,,
+10,Dinamo Divano,Real Sfiga,,
